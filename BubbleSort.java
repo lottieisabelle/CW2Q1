@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class BubbleSort {
     // TODO change to a list of strings
     // TODO change to a data type that is allowed or i made myself
-    ArrayList<Integer> list = new ArrayList<Integer>();
+    ArrayList<String> list = new ArrayList<String>();
 
     /**
      * constructor
@@ -102,13 +102,16 @@ public class BubbleSort {
      *
      * @param list : list of items to sort
      */
-    private void sort(ArrayList<Integer> list){
+    private void sort(ArrayList<String> list){
 
         // TODO - change to comparing ascii values
+
         for (int x = 0; x < list.size()-1; x++){
             for (int y = 0; y < list.size()-1; y++){
-                if (list.get(y) > list.get(y+1)){
-                    int temp = list.get(y);
+
+                // compares ascii values
+                if (list.get(y).charAt(0) > list.get(y+1).charAt(0)){
+                    String temp = list.get(y);
                     list.set(y, list.get(y+1));
                     list.set(y+1, temp);
 
@@ -117,12 +120,15 @@ public class BubbleSort {
                 }
             }
         }
+
+
+
     }
 
     public static void main(String[] args){
         BubbleSort bubbleSort = new BubbleSort();
 
-        
+        /*
         bubbleSort.list.add(21);
         bubbleSort.list.add(3);
         bubbleSort.list.add(33);
@@ -131,9 +137,9 @@ public class BubbleSort {
         bubbleSort.list.add(4);
         bubbleSort.list.add(2);
         bubbleSort.list.add(33);
+        */
 
 
-        /*
         bubbleSort.list.add("f");
         bubbleSort.list.add("z");
         bubbleSort.list.add("m");
@@ -142,9 +148,6 @@ public class BubbleSort {
         bubbleSort.list.add("a");
         bubbleSort.list.add("s");
         bubbleSort.list.add("d");
-        */
-
-
         System.out.println(bubbleSort.list);
 
         bubbleSort.sort(bubbleSort.list);
