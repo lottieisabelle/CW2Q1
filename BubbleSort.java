@@ -1,12 +1,9 @@
 // Bubble sort algorithm
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class BubbleSort {
-    // TODO change to a list of strings
-    // TODO change to a data type that is allowed or i made myself
-    ArrayList<String> list = new ArrayList<String>();
+    private int numberCommas = 0;
 
     /**
      * constructor
@@ -15,6 +12,7 @@ public class BubbleSort {
 
     }
 
+    // TODO TAKE OUT MAYBE
     private String readFileName(){
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -44,57 +42,65 @@ public class BubbleSort {
      *
      * @param fileName : Name of the file.
      */
-    protected void readFile(String fileName) {
+    private String[] readFile(String fileName) {
 
         try {
             File file = new File(fileName); // attempts to find file
 
-            // file reader reads text files in the default encoding
-            FileReader fileReader = new FileReader(fileName);
-            // always wrap file reader in buffered reader
-            BufferedReader reader = new BufferedReader(fileReader);
+            // TODO change this to your local file path
+            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\lotti\\IdeaProjects\\CW2\\src\\names.txt"));
+
             String s;
+            int x = 0;
 
-            ArrayList<String> names = new ArrayList<String>();
-
-            while ((s = reader.readLine()) != null){
-
-                String[] split = s.split(",");
-
-                for (int i = 0; i < split.length;){
-                    names.add(split[i]);
-                    System.out.println(split[i]);
+            while ((s = reader.readLine()) != null) {
+                x = s.length();
+                // counts the number of commas
+                for (int i = 0; i < s.length() - 1; i++) {
+                    if (s.charAt(i) == ',') {
+                        numberCommas++;
+                    }
                 }
             }
             reader.close();
 
+            // TODO change this to your local file path
+            BufferedReader fileReader = new BufferedReader(new FileReader("C:\\Users\\lotti\\IdeaProjects\\CW2\\src\\names.txt"));
 
-            /*
-            do {
-                s = reader.readLine(); // reads first line of file
-            }
+            String[] nameList = new String[numberCommas+1];
+            int listPointer = 0; // pointer for the nameList array
+            // holder for the current name
+            String newName = "";
 
-            while ((s.length() > 3) && (!s.substring(0,4).equals("name")));{
-                mapName = s.replace("name ", "");
-            }
+            while ((s = fileReader.readLine()) != null){
+                for (int j = 0; j < x-1; j++){
 
-            do {
-                s = reader.readLine(); // reads second line of file
+                    if (s.charAt(j) == ','){
+                        nameList[listPointer] = newName;
+                        newName = ""; // reset name string
+                        listPointer++; // increment pointer
+                    } else if (s.charAt(j) != '"'){
+                        newName = newName + s.charAt(j);
+                    }
+                }
+                nameList[listPointer] = newName;
+                newName = ""; // reset name string
+                listPointer++; // increment pointer
             }
+            fileReader.close();
 
-            while ((s.length() > 2) && (!s.substring(0,3).equals("win")));{
-                String[] split = s.split(" ");
-                goldRequired = Integer.parseInt(split[1]);
-            }
-            */
+            return nameList;
         }
         catch(FileNotFoundException e) {
             System.out.println("Error. File not found.");
+            e.printStackTrace();
             System.exit(0);
+            return null;
         }
         catch(IOException e) {
             System.out.println("Error reading file.");
             System.exit(0);
+            return null;
         }
     }
 
@@ -102,67 +108,84 @@ public class BubbleSort {
      *
      * @param list : list of items to sort
      */
-    private void sort(ArrayList<String> list){
+    private String[] sort(String[] list){
+        boolean isEqual;
+        boolean yIsShorter = true;
+        boolean swap = true;
 
-        // TODO - change to comparing ascii values
+        for (int x = 0; x < list.length-1; x++){
+            for (int y = 0; y < list.length-1; y++){
+                isEqual = true;
 
-        for (int x = 0; x < list.size()-1; x++){
-            for (int y = 0; y < list.size()-1; y++){
+                int maxIndex = list[y].length(); // length of the shortest name in the comparison
+                if (list[y].length() > list[y+1].length()){
+                    yIsShorter = false;
+                    maxIndex = list[y+1].length();
+                }
 
-                // compares ascii values
-                if (list.get(y).charAt(0) > list.get(y+1).charAt(0)){
-                    String temp = list.get(y);
-                    list.set(y, list.get(y+1));
-                    list.set(y+1, temp);
+                int counter = 0;
+                while(isEqual){
+                    if (counter == maxIndex){
+                        if (!yIsShorter){
+                            String temp = list[y];
+                            list[y] = list[y+1];
+                            list[y+1] = temp;
+                        }
+                        break;
+                    }
 
-                    // TODO output lists (DEBUG)
-                    System.out.println(list);
+                    if (list[y].charAt(counter) == list[y+1].charAt(counter)){
+                        counter++;
+                    } else {
+                        isEqual = false;
+                    }
+                }
+
+                if (counter != maxIndex){
+                    if (list[y].charAt(counter) > list[y+1].charAt(counter)){
+                        String temp = list[y];
+                        list[y] = list[y+1];
+                        list[y+1] = temp;
+                    }
                 }
             }
         }
+        return list;
+    }
 
+    private void writeFile(String[] list){
+        try {
+            // TODO change this to your local file path
+            FileWriter fileWriter = new FileWriter("C:\\Users\\lotti\\IdeaProjects\\CW2\\src\\sortedNames.txt");
 
+            for (int i = 0; i < list.length; i++){
+                if (i == list.length-1){
+                    fileWriter.write('"' + list[i] + '"');
+                } else {
+                    fileWriter.write('"' + list[i] + '"' + ',');
+                }
+            }
+            fileWriter.close();
 
+        } catch (IOException e){
+            System.out.println("Error writing to file. Check the file path.");
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args){
         BubbleSort bubbleSort = new BubbleSort();
 
-        /*
-        bubbleSort.list.add(21);
-        bubbleSort.list.add(3);
-        bubbleSort.list.add(33);
-        bubbleSort.list.add(1);
-        bubbleSort.list.add(7);
-        bubbleSort.list.add(4);
-        bubbleSort.list.add(2);
-        bubbleSort.list.add(33);
-        */
-
-
-        bubbleSort.list.add("f");
-        bubbleSort.list.add("z");
-        bubbleSort.list.add("m");
-        bubbleSort.list.add("t");
-        bubbleSort.list.add("g");
-        bubbleSort.list.add("a");
-        bubbleSort.list.add("s");
-        bubbleSort.list.add("d");
-        System.out.println(bubbleSort.list);
-
-        bubbleSort.sort(bubbleSort.list);
-
-        //
         System.out.println("Welcome to the Bubble Sort Algorithm");
-        System.out.println("Please enter the name of your text file, including .txt: ");
 
-        // String inputFile = bubbleSort.readFileName();
+        String[] ListOfNames = bubbleSort.readFile("names.txt");
+        System.out.println("Names have been read into the program.");
 
+        String[] sortedNames = bubbleSort.sort(ListOfNames);
+        System.out.println("Names have been sorted into alphabetical order.");
 
-        // TODO read a list of names from a file
-        // TODO store these names
-        // TODO compare ascii values of these words to swap them
-
+        bubbleSort.writeFile(sortedNames);
+        System.out.println("Names have been saved in a new file.");
     }
 }
 
